@@ -1,0 +1,39 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.33530.505
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Jose.Tests", "Tests\Jose.Tests.csproj", "{228CE9CB-3D70-4949-A72F-E61E3DF9F8B8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{B3989D65-BC01-4885-9218-A789BDCA0725}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Src", "Src", "{2B3D28E3-4323-4428-A4CA-3E22B88B5649}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jose.Core", "Src\Jose.Core\Jose.Core.csproj", "{E1B2E0B7-7D18-4DC2-849B-8C6E6AC9E3C5}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{228CE9CB-3D70-4949-A72F-E61E3DF9F8B8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{228CE9CB-3D70-4949-A72F-E61E3DF9F8B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{228CE9CB-3D70-4949-A72F-E61E3DF9F8B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{228CE9CB-3D70-4949-A72F-E61E3DF9F8B8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E1B2E0B7-7D18-4DC2-849B-8C6E6AC9E3C5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E1B2E0B7-7D18-4DC2-849B-8C6E6AC9E3C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E1B2E0B7-7D18-4DC2-849B-8C6E6AC9E3C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E1B2E0B7-7D18-4DC2-849B-8C6E6AC9E3C5}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{228CE9CB-3D70-4949-A72F-E61E3DF9F8B8} = {B3989D65-BC01-4885-9218-A789BDCA0725}
+		{E1B2E0B7-7D18-4DC2-849B-8C6E6AC9E3C5} = {2B3D28E3-4323-4428-A4CA-3E22B88B5649}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {83F389F0-F3CB-4223-8D35-BF11528008B5}
+	EndGlobalSection
+EndGlobal
