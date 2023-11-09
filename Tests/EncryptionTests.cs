@@ -1,3 +1,4 @@
+using FluentAssertions;
 using Jose.Core;
 using Microsoft.Extensions.Options;
 using System.ComponentModel;
@@ -22,19 +23,19 @@ namespace Jose.Tests
         }
 
         [Fact]
-        public void Encrypt_JWE()
+        public void EncryptedThenDecryptedJWE_Should_RetainClaims()
         {
             // ARRANGE
             JWEBuilder builder = new JWEBuilder(_options);
             string audience = "test.audience";
 
             // ACT
-            string encrypted = builder.Encrypt(new List<Claim>(){ new Claim("StepUp", "Y")}, new TimeSpan(ticks: 10000), audience);
-            bool valid = builder.Validate(encrypted, audience);
-            List<Claim> claims = builder.Decrypt(encrypted, audience);
+            string encrypted = builder.Encrypt(new ExampleObject() { SubObject = new SubObject() { SubProperty = "Example" } }, new TimeSpan(ticks: 10000), audience);
+            ExampleObject decrypted = builder.Decrypt<ExampleObject>(encrypted, audience);
 
 
             // ASSERT
+            decrypted.SubObject.SubProperty.Should().Be("Example");
 
         }
     }

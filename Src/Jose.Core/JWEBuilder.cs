@@ -1,11 +1,10 @@
-﻿using Microsoft.Extensions.Options;
+﻿using JsonFlatten;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Runtime.InteropServices.JavaScript;
-using System.Security.Claims;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System.Security.Cryptography;
-using System.Text;
 using System.Text.Json;
 
 namespace Jose.Core
@@ -18,7 +17,6 @@ namespace Jose.Core
         private readonly RsaSecurityKey _publicEncryptionKey;
         private readonly ECDsaSecurityKey _privateSigningKey;
         private readonly ECDsaSecurityKey _publicSigningKey;
-
 
         public JWEBuilder(IOptions<JWEOptions> options) 
         {
@@ -36,15 +34,18 @@ namespace Jose.Core
             _publicSigningKey = new ECDsaSecurityKey(ECDsa.Create(signingKey.ExportParameters(false))) { KeyId = _options.Value.SigningKey };
         }
 
-        public string Encrypt(List<Claim> claims, TimeSpan expiry, string audience) 
+        public string Encrypt(Object input, TimeSpan expiry, string audience) 
         {
             var handler = new JsonWebTokenHandler();
+
+            var claims = JObject.Parse(JsonConvert.SerializeObject(input)).Flatten();
 
             string token = handler.CreateToken(new SecurityTokenDescriptor
             {
                 Audience = audience,
                 Issuer = _options.Value.Issuer,
-                Claims = claims.ToDictionary(x => x.Type, y => (object)y.Value),
+                Expires = DateTime.UtcNow.Add(expiry),
+                Claims = claims,
 
                 // private key for signing
                 SigningCredentials = new SigningCredentials(
@@ -79,7 +80,7 @@ namespace Jose.Core
             return result.IsValid;
         }
 
-        public List<Claim> Decrypt(string token, string audience)
+        public T Decrypt<T>(string token, string audience)
         {
             var handler = new JsonWebTokenHandler();
 
@@ -97,7 +98,8 @@ namespace Jose.Core
                     TokenDecryptionKey = _privateEncryptionKey
                 }).Result;
 
-            return result.Claims.Select(claim => new Claim(claim.Key, claim.Value.ToString())).ToList();
+            JObject unflattened = result.Claims.Unflatten();
+            return unflattened.ToObject<T>();
         }
 
     }
