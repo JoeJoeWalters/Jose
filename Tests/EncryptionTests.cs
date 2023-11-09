@@ -15,17 +15,8 @@ namespace Jose.Tests
 
             JWEOptions settings = new JWEOptions();
 
-            Aes enc = Aes.Create();
-            enc.GenerateIV();
-            enc.GenerateKey();
-            settings.EncryptionKey = enc.Key;
-            settings.EncryptionIV = enc.IV;
-
-            Aes sig = Aes.Create();
-            sig.GenerateIV();
-            sig.GenerateKey();
-            settings.SigningKey = sig.Key;
-            settings.SigningIV = sig.IV;
+            settings.EncryptionKey = Guid.NewGuid().ToString();
+            settings.SigningKey = Guid.NewGuid().ToString();
 
             _options = Options.Create(settings);
         }
@@ -35,9 +26,13 @@ namespace Jose.Tests
         {
             // ARRANGE
             JWEBuilder builder = new JWEBuilder(_options);
+            string audience = "test.audience";
 
             // ACT
-            builder.Encrypt(new List<Claim>(), new TimeSpan(ticks: 10000));
+            string encrypted = builder.Encrypt(new List<Claim>(){ new Claim("StepUp", "Y")}, new TimeSpan(ticks: 10000), audience);
+            bool valid = builder.Validate(encrypted, audience);
+            List<Claim> claims = builder.Decrypt(encrypted, audience);
+
 
             // ASSERT
 

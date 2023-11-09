@@ -8,10 +8,10 @@ namespace Jose.Core
 {
     public class JWEOptions
     {
-        public byte[] SigningKey { get; set; }
-        public byte[] SigningIV { get; set; }
+        public string Issuer { get; set; } = "sca.service.com";
 
-        public byte[] EncryptionKey { get; set; }
-        public byte[] EncryptionIV { get; set; }
+        public string SigningKey { get; set; } = string.Empty;
+
+        public string EncryptionKey { get; set; } = string.Empty;
     }
 }
