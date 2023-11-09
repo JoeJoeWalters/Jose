@@ -30,7 +30,11 @@ namespace Jose.Tests
             string audience = "test.audience";
 
             // ACT
-            string encrypted = builder.Encrypt(new ExampleObject() { SubObject = new SubObject() { SubProperty = "Example" } }, new TimeSpan(ticks: 10000), audience);
+            TimeSpan expiry = TimeSpan.FromMinutes(5); // Default
+            if (_options.Value.Expiry.ContainsKey(audience)) 
+                expiry = TimeSpan.FromSeconds(_options.Value.Expiry[audience]); // For specific audience
+
+            string encrypted = builder.Encrypt(new ExampleObject() { SubObject = new SubObject() { SubProperty = "Example" } }, expiry, audience);
             ExampleObject decrypted = builder.Decrypt<ExampleObject>(encrypted, audience);
 
 
