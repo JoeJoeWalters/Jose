@@ -18,6 +18,8 @@ namespace Jose.Core
         private readonly ECDsaSecurityKey _privateSigningKey;
         private readonly ECDsaSecurityKey _publicSigningKey;
 
+        private readonly JsonWebTokenHandler _handler;
+
         public JWEBuilder(IOptions<JWEOptions> options) 
         {
             _options = options;
@@ -32,15 +34,15 @@ namespace Jose.Core
             _publicEncryptionKey = new RsaSecurityKey(encryptionKey.ExportParameters(false)) { KeyId = _options.Value.EncryptionKey };
             _privateSigningKey = new ECDsaSecurityKey(signingKey) { KeyId = _options.Value.SigningKey };
             _publicSigningKey = new ECDsaSecurityKey(ECDsa.Create(signingKey.ExportParameters(false))) { KeyId = _options.Value.SigningKey };
+
+            _handler = new JsonWebTokenHandler();
         }
 
-        public string Encrypt(Object input, TimeSpan expiry, string audience) 
+        public async Task<string> Encrypt(Object input, TimeSpan expiry, string audience) 
         {
-            var handler = new JsonWebTokenHandler();
-
             var claims = JObject.Parse(JsonConvert.SerializeObject(input)).Flatten();
 
-            string token = handler.CreateToken(new SecurityTokenDescriptor
+            string token = _handler.CreateToken(new SecurityTokenDescriptor
             {
                 Audience = audience,
                 Issuer = _options.Value.Issuer,
@@ -59,11 +61,11 @@ namespace Jose.Core
             return token;
         }
 
-        public bool Validate(string token, string audience)
+        public async Task<bool> Validate(string token, string audience)
         {
             var handler = new JsonWebTokenHandler();
 
-            TokenValidationResult result = handler.ValidateTokenAsync(
+            TokenValidationResult result = await _handler.ValidateTokenAsync(
                 token,
                 new TokenValidationParameters
                 {
@@ -75,16 +77,16 @@ namespace Jose.Core
 
                     // private key for encryption
                     TokenDecryptionKey = _privateEncryptionKey
-                }).Result;
+                });
 
             return result.IsValid;
         }
 
-        public T Decrypt<T>(string token, string audience)
+        public async Task<T> Decrypt<T>(string token, string audience)
         {
             var handler = new JsonWebTokenHandler();
 
-            TokenValidationResult result = handler.ValidateTokenAsync(
+            TokenValidationResult result = await handler.ValidateTokenAsync(
                 token,
                 new TokenValidationParameters
                 {
@@ -96,7 +98,7 @@ namespace Jose.Core
 
                     // private key for encryption
                     TokenDecryptionKey = _privateEncryptionKey
-                }).Result;
+                });
 
             JObject unflattened = result.Claims.Unflatten();
             return unflattened.ToObject<T>();

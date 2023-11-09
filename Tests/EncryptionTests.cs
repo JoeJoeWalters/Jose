@@ -34,8 +34,8 @@ namespace Jose.Tests
             if (_options.Value.Expiry.ContainsKey(audience)) 
                 expiry = TimeSpan.FromSeconds(_options.Value.Expiry[audience]); // For specific audience
 
-            string encrypted = builder.Encrypt(new ExampleObject() { SubObject = new SubObject() { SubProperty = "Example" } }, expiry, audience);
-            ExampleObject decrypted = builder.Decrypt<ExampleObject>(encrypted, audience);
+            string encrypted = builder.Encrypt(new ExampleObject() { SubObject = new SubObject() { SubProperty = "Example" } }, expiry, audience).Result;
+            ExampleObject decrypted = builder.Decrypt<ExampleObject>(encrypted, audience).Result;
 
 
             // ASSERT
